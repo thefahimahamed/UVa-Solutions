@@ -71,6 +71,6 @@ with open(f"{folder}/README.md", "w", encoding="utf-8") as f:
 # Git push
 subprocess.run(["git", "add", "."])
 subprocess.run(["git", "commit", "-m", f"Add UVa {problem_number} - {problem_name}"])
+subprocess.run(["git", "pull", "origin", "main", "--no-edit"])
 subprocess.run(["git", "push", "-u", "origin", "main"])
-
 print(f"\n✅ Done! Pushed: {folder}/")
