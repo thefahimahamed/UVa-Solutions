@@ -1,7 +1,6 @@
 import os
 import subprocess
 import requests
-from datetime import datetime
 
 print("=== UVa Auto Pusher ===\n")
 
@@ -58,19 +57,27 @@ safe_name = problem_name.replace(" ", "-").replace("/", "-")
 folder = f"{problem_number}-{safe_name}"
 os.makedirs(folder, exist_ok=True)
 
+# Write solution file
 with open(f"{folder}/solution.{ext}", "w", encoding="utf-8") as f:
     f.write(code)
 
+# Write README file
 with open(f"{folder}/README.md", "w", encoding="utf-8") as f:
     f.write(f"# UVa {problem_number} - {problem_name}\n\n")
     f.write(f"**Language:** {language}  \n")
     f.write(f"**Date Solved:** {date_solved}  \n\n")
     f.write(f"**Problem Link:** {problem_link}  \n\n")
-    f.write(f"## Solution\nSee `solution.{ext}`\n")
+    f.write(f"## Solution\n")
+    f.write(f"See `solution.{ext}`\n")
+
+print(f"\n📁 Folder created: {folder}/")
+print(f"📄 solution.{ext} ✅")
+print(f"📄 README.md ✅")
 
 # Git push
 subprocess.run(["git", "add", "."])
 subprocess.run(["git", "commit", "-m", f"Add UVa {problem_number} - {problem_name}"])
 subprocess.run(["git", "pull", "origin", "main", "--no-edit"])
 subprocess.run(["git", "push", "-u", "origin", "main"])
+
 print(f"\n✅ Done! Pushed: {folder}/")
