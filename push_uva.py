@@ -72,7 +72,7 @@ while True:
 code = "\n".join(lines)
 
 # Create folder & files
-safe_name = problem_name.replace(" ", "-").replace("/", "-")
+safe_name = "".join(c if c.isalnum() or c in "-_ " else "" for c in problem_name).strip().replace(" ", "-")
 folder = f"{problem_number}-{safe_name}"
 os.makedirs(folder, exist_ok=True)
 
@@ -96,7 +96,25 @@ print(f"📄 README.md ✅")
 # Git push
 subprocess.run(["git", "add", "."])
 subprocess.run(["git", "commit", "-m", f"Add UVa {problem_number} - {problem_name}"])
-subprocess.run(["git", "pull", "origin", "main", "--no-edit"])
-subprocess.run(["git", "push", "-u", "origin", "main"])
 
-print(f"\n✅ Done! Pushed: {folder}/")
+# Pull first to avoid conflicts
+pull_result = subprocess.run(
+    ["git", "pull", "origin", "main", "--no-edit", "--rebase"],
+    capture_output=True, text=True
+)
+if pull_result.returncode != 0:
+    subprocess.run(["git", "rebase", "--abort"])
+    subprocess.run(["git", "pull", "origin", "main", "--no-edit"])
+
+# Push
+push_result = subprocess.run(
+    ["git", "push", "-u", "origin", "main"],
+    capture_output=True, text=True
+)
+
+if push_result.returncode == 0:
+    print(f"\n✅ Done! Pushed: {folder}/")
+else:
+    print("\n⚠️ Push failed! Trying force push...")
+    subprocess.run(["git", "push", "-u", "origin", "main", "--force-with-lease"])
+    print(f"\n✅ Done! Pushed: {folder}/")
