@@ -3,17 +3,26 @@ import subprocess
 import requests
 
 print("=== UVa Auto Pusher ===\n")
+print("💡 Type 'exit' at any step to cancel.\n")
 
-problem_number = input("Enter Problem Number: ").strip()
-problem_link = input("Enter Problem Link: ").strip()
-date_solved = input("Enter Date Solved (e.g. 03 May 2026): ").strip()
+def get_input(prompt):
+    value = input(prompt).strip()
+    if value.lower() == "exit":
+        print("\n❌ Cancelled! Nothing was pushed.")
+        exit()
+    return value
+
+problem_number = get_input("Enter Problem Number: ")
+problem_link = get_input("Enter Problem Link: ")
+date_solved = get_input("Enter Date Solved (e.g. 03 May 2026): ")
 
 print("\nSelect Language:")
 print("  1. C++")
 print("  2. C")
 print("  3. Java")
 print("  4. Python")
-language = input("Enter choice (1/2/3/4): ").strip()
+print("  0. Cancel")
+language = get_input("Enter choice (1/2/3/4): ")
 
 lang_map = {
     "1": ("C++", "cpp"),
@@ -36,10 +45,17 @@ try:
         problem_name = data.get("title", f"Problem-{problem_number}")
         print(f"✅ Found: {problem_name}")
     else:
-        problem_name = input("⚠️ Not found. Enter problem name manually: ").strip()
+        problem_name = get_input("⚠️ Not found. Enter problem name manually: ")
 except Exception as e:
     print(f"⚠️ Could not fetch: {e}")
-    problem_name = input("Enter problem name manually: ").strip()
+    problem_name = get_input("Enter problem name manually: ")
+
+# Confirm before continuing
+print(f"\n📋 Problem: {problem_number} - {problem_name}")
+print(f"🌐 Link: {problem_link}")
+print(f"📅 Date: {date_solved}")
+print(f"💻 Language: {language}")
+confirm = get_input("\nLooks good? Press Enter to continue or type 'exit' to cancel: ")
 
 # Paste solution
 print("\nPaste your accepted solution below.")
@@ -47,6 +63,9 @@ print("When done, type END on a new line and press Enter:\n")
 lines = []
 while True:
     line = input()
+    if line.strip().lower() == "exit":
+        print("\n❌ Cancelled! Nothing was pushed.")
+        exit()
     if line.strip() == "END":
         break
     lines.append(line)
