@@ -29,3 +29,5 @@ int main()
         sum += ans;
         printf("%d\n",sum);
     }
+    return 0;
+}
